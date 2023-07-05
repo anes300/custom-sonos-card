@@ -4,8 +4,12 @@ import { html, LitElement } from 'lit';
 import { property } from 'lit/decorators.js';
 import Store from '../store';
 import { CardConfig } from '../types';
-import { getCurrentTrack, getSpeakerList } from '../utils';
+import { getCurrentTrack, getSpeakerList, openSpotify } from '../utils';
 import { styleMap } from 'lit-html/directives/style-map.js';
+import {
+  mdiSpotify,
+} from '@mdi/js';
+import { iconButton } from './icon-button';
 
 class PlayerHeader extends LitElement {
   @property() store!: Store;
@@ -22,6 +26,7 @@ class PlayerHeader extends LitElement {
       song = getCurrentTrack(this.entity);
     }
     return html` <div style="${this.infoStyle()}">
+      <div style="${this.spotifyStyle()}">${iconButton(mdiSpotify, this.spotify)}</div>
       <div style="${this.entityStyle()}">${speakerList}</div>
       <div style="${this.songStyle()}">${song}</div>
       <div style="${this.artistAlbumStyle()}">${attributes.media_album_name}</div>
@@ -29,13 +34,25 @@ class PlayerHeader extends LitElement {
     </div>`;
   }
 
-  private infoStyle() {
+  private spotify = () => openSpotify(this.hass);
+
+  private spotifyStyle() {
     return styleMap({
-      margin: '0.25rem',
-      padding: '0.5rem 3.5rem',
-      textAlign: 'center',
+      position: 'absolute',
+      top: '0.25rem',
+      left: '0.25rem',
     });
   }
+  
+  private infoStyle() {
+  return styleMap({
+    margin: '0.25rem',
+    padding: '0.5rem 3.5rem',
+    textAlign: 'center',
+    position: 'relative',
+    paddingLeft: '2.5rem', // Adjust the value based on the size of the Spotify logo/button
+  });
+}
 
   private entityStyle() {
     return styleMap({

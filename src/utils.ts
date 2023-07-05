@@ -4,6 +4,7 @@ import { CardConfig, PlayerGroup, Section } from './types';
 import { ACTIVE_PLAYER_EVENT, BROWSE_CLICKED, PLAY_DIR, REQUEST_PLAYER_EVENT, SHOW_SECTION } from './constants';
 import { styleMap } from 'lit-html/directives/style-map.js';
 
+
 export function getEntityName(hass: HomeAssistant, config: CardConfig, entity: string) {
   const name = hass.states[entity].attributes.friendly_name || '';
   if (config.entityNameRegexToReplace) {
@@ -72,4 +73,15 @@ export function dispatchActiveEntity(entityId: string) {
     detail: { entityId },
   });
   window.dispatchEvent(event);
+}
+
+export function openSpotify(hass: HomeAssistant) {
+  const isAndroid = navigator.userAgent.toLowerCase().indexOf('android') > -1;
+  if (isAndroid) { 
+    hass.callService('fully_kiosk', 'start_application', {
+      application: 'com.spotify.music',
+    }, {
+      device_id: '65795868f92b95d33e7345919ea7be0b',
+    });
+  } else window.open('https://open.spotify.com/');
 }
